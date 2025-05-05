@@ -1,0 +1,202 @@
+[
+    {
+        "query": "How many users have no sign-ins in the last 30 days?",
+        "sql_query": "SELECT COUNT(*) FROM users WHERE last_sign_in_date < DATE_SUB(CURRENT_DATE, INTERVAL 30 DAY) OR last_sign_in_date IS NULL",
+        "expected_response": "There are 1457 users who have not signed in during the last 30 days.",
+        "steps": [
+            "Identify this as a query about inactive users.",
+            "Convert to SQL: SELECT COUNT(*) FROM users WHERE last_sign_in_date < DATE_SUB(CURRENT_DATE, INTERVAL 30 DAY) OR last_sign_in_date IS NULL.",
+            "Use the precomputed list of inactive users (st.session_state.inactive_users).",
+            "Return the count of inactive users."
+        ]
+    },
+    {
+        "query": "SELECT COUNT(*) FROM users",
+        "sql_query": "SELECT COUNT(*) FROM users",
+        "expected_response": "There are 1545 users in your tenant.",
+        "steps": [
+            "Recognize this as a query for the total number of users.",
+            "Use the locally stored user data (st.session_state.users_data).",
+            "Return the total count of users."
+        ]
+    },
+    {
+        "query": "How many total users?",
+        "sql_query": "SELECT COUNT(*) FROM users",
+        "expected_response": "There are a total of 1545 users in your tenant.",
+        "steps": [
+            "Identify this as a natural language query for the total number of users.",
+            "Convert to SQL: SELECT COUNT(*) FROM users.",
+            "Use the locally stored user data (st.session_state.users_data).",
+            "Return the total count of users."
+        ]
+    },
+    {
+        "query": "SELECT COUNT(DISTINCT role) FROM roles",
+        "sql_query": "SELECT COUNT(DISTINCT role) FROM roles",
+        "expected_response": "Number of distinct job titles: 97",
+        "steps": [
+            "Interpret 'role' as the 'Job Title' field in the user data.",
+            "Extract all unique job titles, normalize them (lowercase, fix typos), and filter out invalid roles.",
+            "Return the count of distinct normalized job titles."
+        ]
+    },
+    {
+        "query": "How many total roles?",
+        "sql_query": "SELECT COUNT(DISTINCT role) FROM roles",
+        "expected_response": "There are 97 distinct roles (job titles) in the dataset.",
+        "steps": [
+            "Identify this as a query for the total number of distinct roles (job titles).",
+            "Convert to SQL: SELECT COUNT(DISTINCT role) FROM roles.",
+            "Extract all unique job titles, normalize them, and filter out invalid roles.",
+            "Return the count of distinct roles."
+        ]
+    },
+    {
+        "query": "List all distinct roles",
+        "sql_query": null,
+        "expected_response": "Distinct roles (job titles) in the dataset:\n1. assistant pharmacist\n2. api manager\n3. actuary\n...",
+        "steps": [
+            "Extract all unique job titles, normalize them, and filter out invalid roles.",
+            "Sort the roles alphabetically and return them as a numbered list."
+        ]
+    },
+    {
+        "query": "SELECT COUNT(*) FROM groups",
+        "sql_query": "SELECT COUNT(*) FROM groups",
+        "expected_response": "There are 50 unique groups in your tenant.",
+        "steps": [
+            "Recognize this as a query for the total number of unique groups.",
+            "Extract all groups from user data, deduplicate, and count them.",
+            "Return the count of unique groups."
+        ]
+    },
+    {
+        "query": "How many total groups?",
+        "sql_query": "SELECT COUNT(*) FROM groups",
+        "expected_response": "There are 50 unique groups in your tenant.",
+        "steps": [
+            "Identify this as a natural language query for the total number of groups.",
+            "Convert to SQL: SELECT COUNT(*) FROM groups.",
+            "Extract all groups from user data, deduplicate, and count them.",
+            "Return the count of unique groups."
+        ]
+    },
+    {
+        "query": "SELECT COUNT(DISTINCT department) FROM users",
+        "sql_query": "SELECT COUNT(DISTINCT department) FROM users",
+        "expected_response": "There are 10 unique departments in your tenant.",
+        "steps": [
+            "Recognize this as a query for the total number of unique departments.",
+            "Extract all departments from user data, deduplicate, and count them.",
+            "Return the count of unique departments."
+        ]
+    },
+    {
+        "query": "How many total departments?",
+        "sql_query": "SELECT COUNT(DISTINCT department) FROM users",
+        "expected_response": "There are 10 unique departments in your tenant.",
+        "steps": [
+            "Identify this as a natural language query for the total number of departments.",
+            "Convert to SQL: SELECT COUNT(DISTINCT department) FROM users.",
+            "Extract all departments from user data, deduplicate, and count them.",
+            "Return the count of unique departments."
+        ]
+    },
+    {
+        "query": "SELECT COUNT(*) FROM users WHERE status = 'disabled'",
+        "sql_query": "SELECT COUNT(*) FROM users WHERE status = 'disabled'",
+        "expected_response": "There are 25 disabled users in your tenant.",
+        "steps": [
+            "Recognize this as a query for the number of disabled users.",
+            "Filter users where 'Account Enabled' is 'false'.",
+            "Return the count of disabled users."
+        ]
+    },
+    {
+        "query": "How many disabled users?",
+        "sql_query": "SELECT COUNT(*) FROM users WHERE status = 'disabled'",
+        "expected_response": "There are 25 disabled users in your tenant.",
+        "steps": [
+            "Identify this as a natural language query for the number of disabled users.",
+            "Convert to SQL: SELECT COUNT(*) FROM users WHERE status = 'disabled'.",
+            "Filter users where 'Account Enabled' is 'false'.",
+            "Return the count of disabled users."
+        ]
+    },
+    {
+        "query": "How many active and disabled users?",
+        "sql_query": null,
+        "expected_response": "The total number of active and disabled users in your tenant is as follows:\n- Active Users: 1520\n- Disabled Users: 25",
+        "steps": [
+            "Identify this as a query for both active and disabled user counts.",
+            "Count users where 'Account Enabled' is 'true' for active users.",
+            "Count users where 'Account Enabled' is 'false' for disabled users.",
+            "Return both counts in a formatted response."
+        ]
+    },
+    {
+        "query": "SELECT * FROM users WHERE email = 'user@example.com'",
+        "sql_query": "SELECT * FROM users WHERE user_principal_name LIKE '%user@example.com%'",
+        "expected_response": "Found 1 user(s) matching 'user@example.com':\nUser: user@example.com, Department: IT, Job Title: Engineer, Account Enabled: true, User Type: Member, Last Sign-In Date: 2025-05-04T22:16:21Z, Groups: Group1, Group2",
+        "steps": [
+            "Extract the search term 'user@example.com' from the query.",
+            "Convert to SQL: SELECT * FROM users WHERE user_principal_name LIKE '%user@example.com%'.",
+            "Search for users whose 'User Principal Name' contains 'user@example.com' (case-insensitive).",
+            "Return the details of matching users."
+        ]
+    },
+    {
+        "query": "user@example.com is from which department?",
+        "sql_query": "SELECT * FROM users WHERE user_principal_name LIKE '%user@example.com%'",
+        "expected_response": "Found 1 user(s) matching 'user@example.com':\nUser: user@example.com, Department: IT, Job Title: Engineer, Account Enabled: true, User Type: Member, Last Sign-In Date: 2025-05-04T22:16:21Z, Groups: Group1, Group2",
+        "steps": [
+            "Extract the search term 'user@example.com' from the query.",
+            "Convert to SQL: SELECT * FROM users WHERE user_principal_name LIKE '%user@example.com%'.",
+            "Search for users whose 'User Principal Name' contains 'user@example.com' (case-insensitive).",
+            "Return the details of matching users, including their department."
+        ]
+    },
+    {
+        "query": "How many users signed in today?",
+        "sql_query": null,
+        "expected_response": "There are 5 users who signed in today.",
+        "steps": [
+            "Use the pre-fetched sign-in data (st.session_state.signin_data).",
+            "Filter for sign-ins that occurred on the current date (today).",
+            "Count the number of unique users who signed in today."
+        ]
+    },
+    {
+        "query": "List users who haven't signed in for the past 30 days",
+        "sql_query": null,
+        "expected_response": "There are 1457 users who have not signed in during the last 30 days.\n0001@pcsassure.me, true, Analyst, Marketing, Member, N/A\n0002@pcsassure.me, true, Manager, Marketing, Member, N/A\n...",
+        "steps": [
+            "Identify this as a request to list inactive users.",
+            "Use the precomputed list of inactive users (st.session_state.inactive_users).",
+            "Return a formatted list of up to 10 users with their details."
+        ]
+    },
+    {
+        "query": "Is John in the list of inactive users?",
+        "sql_query": "SELECT COUNT(*) FROM users WHERE user_principal_name LIKE '%John%' AND (last_sign_in_date < DATE_SUB(CURRENT_DATE, INTERVAL 30 DAY) OR last_sign_in_date IS NULL)",
+        "expected_response": "No, 'John' is not in the list of users who have not signed in during the last 30 days.",
+        "steps": [
+            "Extract the name 'John' from the query.",
+            "Convert to SQL: SELECT COUNT(*) FROM users WHERE user_principal_name LIKE '%John%' AND (last_sign_in_date < DATE_SUB(CURRENT_DATE, INTERVAL 30 DAY) OR last_sign_in_date IS NULL).",
+            "Search the precomputed list of inactive users for any user whose 'User Principal Name' contains 'John' (case-insensitive).",
+            "Return whether the name was found in the list."
+        ]
+    },
+    {
+        "query": "List all inactive users named John",
+        "sql_query": "SELECT * FROM users WHERE user_principal_name LIKE '%John%' AND (last_sign_in_date < DATE_SUB(CURRENT_DATE, INTERVAL 30 DAY) OR last_sign_in_date IS NULL)",
+        "expected_response": "No inactive users found with the name 'John'.",
+        "steps": [
+            "Extract the name 'John' from the query.",
+            "Convert to SQL: SELECT * FROM users WHERE user_principal_name LIKE '%John%' AND (last_sign_in_date < DATE_SUB(CURRENT_DATE, INTERVAL 30 DAY) OR last_sign_in_date IS NULL).",
+            "Filter the precomputed list of inactive users for those whose 'User Principal Name' contains 'John' (case-insensitive).",
+            "Return a formatted list of matching users with their details, or a message if no matches are found."
+        ]
+    }
+]
